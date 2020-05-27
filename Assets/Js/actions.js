@@ -1,26 +1,80 @@
+/* * * * * * * * * * * * * * * * * * * * * * * 
+    VARS
+* * * * * * * * * * * * * * * * * * * * * * */
+
+// Game settings
+const timeLimit = 5
+const colors = ['red', 'green', 'blue']; // web colors only
+const startNumber = 1 // start with three words
+
+// Game elements
 const start = document.getElementById('start-button');
-const colors = ['red', 'green', 'blue'];
 const words = document.getElementById('words');
 const countDown = document.getElementById('count-down');
-const timeLimit = 5
-const circleMask = document.querySelector('.circle__mask--full');
+const circleMaskFull = document.querySelector('.circle__mask--full');
+const circleMaskHalf = document.querySelector('.circle__mask--half');
 const circleFills = document.querySelectorAll('.circle__fill');
-let challenge = '';
+
+// Game variables
+let challenge = ''; // This var holds the randomly generated color words
+let round = 1;
+
+// Voice synth items
+const talk = document.getElementById('talk');
+const content = document.querySelector('.content');
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+	recognition = new SpeechRecognition();
+} else {
+	console.log('speech recognition seems to be unsuported in this browser');
+	recognition = "";
+}
 
 start.addEventListener('click', startGame);
 
 function startGame(){
 	let userInput = '';
 
-	showChallenge(3);
+	showChallenge(startNumber);
 	placeHolderAnswer()
 	timer();
+    recognition.start();
 
-	circleMask.classList.add('active');
-	for (var i = 0; i < circleFills.length; i++) {
-		circleFills[i].classList.add('active');
+	circleMaskFull.classList.add('active');
+}
+
+function updateGame(gameStatus, gameTime, round){
+console.log('updateGame');
+	if ( gameStatus == 'game over' ) {
+		console.log('game over');
 	}
 
+	if ( gameStatus == 'next round' ) {
+		
+		console.log('next round');
+	}
+
+	// Update timer
+	countDown.innerHTML = gameTime;
+
+	// Update button
+	start.firstChild.data = gameStatus;
+}
+
+function timerAnimation(){
+	circleMaskFull.innerHTML = '';
+	circleMaskHalf.innerHTML = '';
+
+	const circleFill1 = document.createElement('div');
+	circleFill1.classList.add('circle__fill');
+	circleFill1.classList.add('active');
+	circleMaskFull.appendChild(circleFill1);
+
+	const circleFill2 = document.createElement('div');
+	circleFill2.classList.add('circle__fill');
+	circleFill2.classList.add('active');
+	circleMaskHalf.appendChild(circleFill2);
 }
 
 function placeHolderAnswer(){
@@ -28,9 +82,10 @@ function placeHolderAnswer(){
 
 	var x = setInterval(function() {
 		if (userAnswers < 0) {
-			userInput = "red green blue"; //placeholder
+			userInput = "red"; //placeholder
 
-			if (challenge == userInput){
+			if (challenge.trim() == userInput.trim()){
+				updateGame('next round', timeLimit, round++);
 				console.log('correct', challenge, ' ', userInput);
 			} else {				
 				console.log('wrong', challenge, ' ', userInput);
@@ -43,14 +98,14 @@ function placeHolderAnswer(){
 }
 
 function timer(){
-	let gameTime = timeLimit;
+	let gameTime = timeLimit -1;
 
-	var x = setInterval(function() {
+	let x = setInterval(function() {
 		if (gameTime < 1) {
 			clearInterval(x);
-			updateBoard('game over', 5);
+			updateGame('game over', 0);
 		} else {
-			updateBoard('game running', gameTime);
+			updateGame('game running', gameTime);
 		}
 
 		gameTime--;
@@ -60,28 +115,15 @@ function timer(){
 function gameOver(){
 	console.log('game over');
 
-	updateBoard(timeLimit);
+	updateGame(timeLimit);
 	// reset css animation
 	// clear worlds (in v2 show which words were wrong)
 }
 
-function updateBoard(gameStatus, gameTime){
-
-	if ( gameStatus == 'game over' ) {
-		countDown.innerHTML = gameTime;
-	}
-
-	// Update timer
-	countDown.innerHTML = gameTime;
-
-	// Update button
-	//
-}
-
-// This function selects a random color
 function colorSelector(taken) {
 	let randomColor = colors[Math.floor(Math.random() * colors.length)];
 	
+	// See which color label is taken, and look for another color for the class
 	if ( taken ) {
 		while ( randomColor == taken){
 			randomColor = colors[Math.floor(Math.random() * colors.length)]
@@ -89,10 +131,8 @@ function colorSelector(taken) {
 	}
 
 	return randomColor;
-	// but not if it's the same as the color
 }
 
-// This function creates the elements and updates the DOM
 function showChallenge( input ){
 	let i = 0;
 
@@ -109,5 +149,19 @@ function showChallenge( input ){
 		words.appendChild(label);
 		i++;
 	}
+}
 
+
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * 
+    VOICE SYNTH
+* * * * * * * * * * * * * * * * * * * * * * */
+
+
+recognition.onresult = function(e){
+	const current = e.resultIndex;
+	const transcript = e.results[current][0].transcript;
+
+	newToDo.value = transcript;
 }
