@@ -16,9 +16,12 @@ body, h1, h2, h3, h4, p, ul[class], ol[class], li, figure, figcaption, blockquot
 /* Timer */ 
 .circle-wrap { margin: 50px auto; width: 150px; height: 150px; background: var(--primary-color); border-radius: 50%; }
 .circle__mask--half { width: 150px; height: 150px; position: absolute; border-radius: 50%; clip: rect(0px, 150px, 150px, 75px); }
-.circle__mask--full { width: 150px; height: 150px; position: absolute; border-radius: 50%; clip: rect(0px, 150px, 150px, 75px); animation: fill linear 5s; transform: rotate(180deg); }
-.circle__fill { clip: rect(0px, 75px, 150px, 0px); background-color: var(--confirmation-color); animation: fill linear 5s; transform: rotate(180deg); width: 150px; height: 150px; position: absolute; border-radius: 50%; }
+.circle__mask--full { width: 150px; height: 150px; position: absolute; border-radius: 50%; clip: rect(0px, 150px, 150px, 75px); transform: rotate(180deg); }
+.circle__fill { clip: rect(0px, 75px, 150px, 0px); background-color: var(--confirmation-color); transform: rotate(180deg); width: 150px; height: 150px; position: absolute; border-radius: 50%; }
 .inside-circle { width: 130px; height: 130px; border-radius: 50%; background: #fff; line-height: 130px; text-align: center; margin-top: 10px; margin-left: 10px; position: absolute; z-index: 100; font-weight: 700; font-size: 2em }
+
+.circle__mask--full.active,
+.circle__fill.active { animation: fill linear 5s; }
 
 @keyframes fill {
 	0%		{ transform: rotate(0deg) }
