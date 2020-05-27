@@ -14,10 +14,15 @@ const countDown = document.getElementById('count-down');
 const circleMaskFull = document.querySelector('.circle__mask--full');
 const circleMaskHalf = document.querySelector('.circle__mask--half');
 const circleFills = document.querySelectorAll('.circle__fill');
+const tempInputWrap = document.getElementById('temp-input');
+const tempInputField = document.getElementById('temp-input__field');
+const tempInputButton = document.getElementById('temp-input__button');
 
 // Game variables
 let challenge = ''; // This var holds the randomly generated color words
 let round = 1;
+let gameStatus = 'not started';
+let timeInterval;
 
 // Voice synth items
 const talk = document.getElementById('talk');
@@ -31,21 +36,28 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	recognition = "";
 }
 
+
+/* * * * * * * * * * * * * * * * * * * * * * * 
+    GAME LOGIC
+* * * * * * * * * * * * * * * * * * * * * * */
+
 start.addEventListener('click', startGame);
+tempInputButton.addEventListener('click', () => {placeHolderAnswer(tempInputField.value) });
 
 function startGame(){
 	let userInput = '';
 
 	showChallenge(startNumber);
-	placeHolderAnswer()
 	timer();
     recognition.start();
 
 	circleMaskFull.classList.add('active');
 }
 
-function updateGame(gameStatus, gameTime, round){
-console.log('updateGame');
+function updateGame(g, gameTime, round){
+
+	gameStatus = g;
+
 	if ( gameStatus == 'game over' ) {
 		console.log('game over');
 	}
@@ -55,7 +67,7 @@ console.log('updateGame');
 		console.log('next round');
 	}
 
-	// Update timer
+	// Update timer graphic
 	countDown.innerHTML = gameTime;
 
 	// Update button
@@ -77,32 +89,27 @@ function timerAnimation(){
 	circleMaskHalf.appendChild(circleFill2);
 }
 
-function placeHolderAnswer(){
-	let userAnswers = 1;
+function placeHolderAnswer(userInput){
 
-	var x = setInterval(function() {
-		if (userAnswers < 0) {
-			userInput = "red"; //placeholder
-
-			if (challenge.trim() == userInput.trim()){
-				updateGame('next round', timeLimit, round++);
-				console.log('correct', challenge, ' ', userInput);
-			} else {				
-				console.log('wrong', challenge, ' ', userInput);
-			}
-
-			clearInterval(x);
+	if ( gameStatus == 'game running' ){
+		if (challenge.trim() == userInput.trim()){
+			updateGame('next round', timeLimit, round++);
+			clearInterval(timeInterval);
+			console.log('correct', challenge, ' ', userInput);
+		} else {				
+			console.log('wrong', challenge, ' ', userInput);
 		}
-		userAnswers--;
-	}, 1000);
+	} else {
+		console.log('game has not yet started or has ended already');
+	}
 }
 
 function timer(){
 	let gameTime = timeLimit -1;
 
-	let x = setInterval(function() {
+	timeInterval = setInterval(function() {
 		if (gameTime < 1) {
-			clearInterval(x);
+			clearInterval(timeInterval);
 			updateGame('game over', 0);
 		} else {
 			updateGame('game running', gameTime);
@@ -157,7 +164,6 @@ function showChallenge( input ){
 /* * * * * * * * * * * * * * * * * * * * * * * 
     VOICE SYNTH
 * * * * * * * * * * * * * * * * * * * * * * */
-
 
 recognition.onresult = function(e){
 	const current = e.resultIndex;
