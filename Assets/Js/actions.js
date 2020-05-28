@@ -1,3 +1,11 @@
+/** TODO
+
+- fix timer animation
+- button disabled should run just once
+
+
+*/
+
 /* * * * * * * * * * * * * * * * * * * * * * * 
     VARS
 * * * * * * * * * * * * * * * * * * * * * * */
@@ -14,13 +22,9 @@ const countDown = document.getElementById('count-down');
 const circleMaskFull = document.querySelector('.circle__mask--full');
 const circleMaskHalf = document.querySelector('.circle__mask--half');
 const circleFills = document.querySelectorAll('.circle__fill');
-const tempInputWrap = document.getElementById('temp-input');
-const tempInputField = document.getElementById('temp-input__field');
-const tempInputButton = document.getElementById('temp-input__button');
 
 // Game variables
 let challenge = ''; // This var holds the randomly generated color words
-let round = 1;
 let gameStatus = 'not started';
 let timeInterval;
 
@@ -42,37 +46,57 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 * * * * * * * * * * * * * * * * * * * * * * */
 
 start.addEventListener('click', startGame);
-tempInputButton.addEventListener('click', () => {placeHolderAnswer(tempInputField.value) });
+
 
 function startGame(){
 	let userInput = '';
 
-	showChallenge(startNumber);
-	timer();
-    recognition.start();
-
-	circleMaskFull.classList.add('active');
+	if ( gameStatus != 'game running' ){
+		displayWords(startNumber);
+		timer();
+		timerAnimation();
+		recognition.start();
+		circleMaskFull.classList.add('active');
+		updateGame('game running', timeLimit, 1);
+	}
 }
 
-function updateGame(g, gameTime, round){
+
+
+function updateGame(g, gameTime){
 
 	gameStatus = g;
+	start.disabled = false;
+
+	if ( gameStatus == 'game running' ) {
+		console.log('game running');
+
+		start.disabled = true;
+	}
 
 	if ( gameStatus == 'game over' ) {
 		console.log('game over');
+
+		start.firstChild.data = 'Game over. Play again?';
+		gameStatus = 'not started'; // reset game status
+		challenge = ''; // reset internal variable with words
+		words.innerHTML = ''; // clear actual words on the page
 	}
 
 	if ( gameStatus == 'next round' ) {
 		
 		console.log('next round');
+		
+		start.firstChild.data = 'Start next round';
 	}
 
 	// Update timer graphic
 	countDown.innerHTML = gameTime;
 
 	// Update button
-	start.firstChild.data = gameStatus;
 }
+
+
 
 function timerAnimation(){
 	circleMaskFull.innerHTML = '';
@@ -89,20 +113,23 @@ function timerAnimation(){
 	circleMaskHalf.appendChild(circleFill2);
 }
 
-function placeHolderAnswer(userInput){
 
+
+function answer(userInput){
 	if ( gameStatus == 'game running' ){
-		if (challenge.trim() == userInput.trim()){
-			updateGame('next round', timeLimit, round++);
+		if (challenge.trim().toLowerCase() == userInput.trim().toLowerCase()){
+			updateGame('next round', timeLimit);
 			clearInterval(timeInterval);
-			console.log('correct', challenge, ' ', userInput);
+			console.log(`Question: ${challenge}, Answer: ${userInput} Result: Corrent`);
 		} else {				
-			console.log('wrong', challenge, ' ', userInput);
+			console.log(`Question: ${challenge}, Answer: ${userInput} Result: Wrong`);
 		}
 	} else {
 		console.log('game has not yet started or has ended already');
 	}
 }
+
+
 
 function timer(){
 	let gameTime = timeLimit -1;
@@ -119,13 +146,8 @@ function timer(){
 	}, 1000);
 }
 
-function gameOver(){
-	console.log('game over');
 
-	updateGame(timeLimit);
-	// reset css animation
-	// clear worlds (in v2 show which words were wrong)
-}
+
 
 function colorSelector(taken) {
 	let randomColor = colors[Math.floor(Math.random() * colors.length)];
@@ -140,7 +162,9 @@ function colorSelector(taken) {
 	return randomColor;
 }
 
-function showChallenge( input ){
+
+
+function displayWords( input ){
 	let i = 0;
 
 	while( input > i ){
@@ -148,7 +172,7 @@ function showChallenge( input ){
 		let wordColor = colorSelector();
 		let labelColor = colorSelector(wordColor);
 
-		challenge += `${wordColor} `;
+		challenge += `${labelColor} `;
 
 		label.appendChild(document.createTextNode(wordColor));
 		label.classList.add('word__label');
@@ -169,5 +193,5 @@ recognition.onresult = function(e){
 	const current = e.resultIndex;
 	const transcript = e.results[current][0].transcript;
 
-	newToDo.value = transcript;
+	answer(transcript);
 }
