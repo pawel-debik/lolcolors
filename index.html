@@ -7,13 +7,15 @@
 <body>
 	<div class="timer">
 		<div class="circle-wrap">
-			<div class="circle">
-				<div class="circle__mask--full mask full"> </div>
-				<div class="circle__mask--half mask "> </div>
-				<div class="inside-circle">
-					<span id="count-down">5</span>
-				</div>
-			</div>
+			<svg id="animated" viewbox="0 0 100 100">
+				<circle cx="50" cy="50" r="45" fill="#f5eadd"/>
+				<path id="progress" class="reset" 
+					d ="M50 10
+						a 40 40 0 0 1 0 80
+						a 40 40 0 0 1 0 -80">
+				</path>
+				<text id="count-down" x="50" y="50" text-anchor="middle" dy="7" font-size="20">5</text>
+			</svg>
 		</div>
 	</div>
 	<div class="bar">
@@ -23,6 +25,13 @@
 	<div class="controls">
 		<button class="primary-button" id="start-button">Start</button>
 	</div>
+	<p>To do:</p>
+	<ul>
+		<li>Display user input</li>
+		<li>Make a Dutch version and add a language selection</li>
+		<li>Stop timer if right answer is registered</li>
+		<li>Fix what labels say on button in between correct / wrong answers</li>
+	</ul>
 	<script async src="Assets/Js/actions.js"></script>
 </body>
 </html>

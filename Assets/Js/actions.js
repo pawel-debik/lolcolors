@@ -18,10 +18,8 @@ const startNumber = 1 // start with three words
 // Game elements
 const start = document.getElementById('start-button');
 const words = document.getElementById('words');
+const progressBar = document.getElementById('progress');
 const countDown = document.getElementById('count-down');
-const circleMaskFull = document.querySelector('.circle__mask--full');
-const circleMaskHalf = document.querySelector('.circle__mask--half');
-const circleFills = document.querySelectorAll('.circle__fill');
 
 // Game variables
 let challenge = ''; // This var holds the randomly generated color words
@@ -56,10 +54,18 @@ function startGame(){
 		timer();
 		timerAnimation();
 		recognition.start();
-		circleMaskFull.classList.add('active');
+		progressBar.classList.add('start');
 		updateGame('game running', timeLimit, 1);
 	}
 }
+
+
+const circle = document.getElementById('animated');
+const counter = document.getElementById('progress');
+
+animated.addEventListener('click', function(e){
+  counter.classList.toggle('start');
+});
 
 
 
@@ -99,18 +105,7 @@ function updateGame(g, gameTime){
 
 
 function timerAnimation(){
-	circleMaskFull.innerHTML = '';
-	circleMaskHalf.innerHTML = '';
-
-	const circleFill1 = document.createElement('div');
-	circleFill1.classList.add('circle__fill');
-	circleFill1.classList.add('active');
-	circleMaskFull.appendChild(circleFill1);
-
-	const circleFill2 = document.createElement('div');
-	circleFill2.classList.add('circle__fill');
-	circleFill2.classList.add('active');
-	circleMaskHalf.appendChild(circleFill2);
+	progressBar.classList.add('start');
 }
 
 
