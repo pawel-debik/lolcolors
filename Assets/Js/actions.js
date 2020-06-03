@@ -19,6 +19,8 @@ const startNumber = 1 // start with three words
 const start = document.getElementById('start-button');
 const words = document.getElementById('words');
 const progressBar = document.getElementById('progress');
+const circle = document.getElementById('animated');
+const instructions = document.getElementById('instructions');
 const countDown = document.getElementById('count-down');
 
 // Game variables
@@ -55,17 +57,10 @@ function startGame(){
 		timerAnimation();
 		recognition.start();
 		progressBar.classList.add('start');
-		updateGame('game running', timeLimit, 1);
+		updateGame('game running', timeLimit);
 	}
 }
 
-
-const circle = document.getElementById('animated');
-const counter = document.getElementById('progress');
-
-animated.addEventListener('click', function(e){
-  counter.classList.toggle('start');
-});
 
 
 
@@ -77,13 +72,22 @@ function updateGame(g, gameTime){
 	if ( gameStatus == 'game running' ) {
 		console.log('game running');
 
+		if ( progressBar.classList.contains('reset') ) {
+			progressBar.classList.toggle('reset');
+		}
+
 		start.disabled = true;
 	}
 
 	if ( gameStatus == 'game over' ) {
+		recognition.stop();
 		console.log('game over');
 
-		start.firstChild.data = 'Game over. Play again?';
+		progressBar.classList.add('reset');
+		progressBar.classList.remove('start');
+
+		start.firstChild.data = 'Play again';
+		instructions.firstChild.data = 'Game over';
 		gameStatus = 'not started'; // reset game status
 		challenge = ''; // reset internal variable with words
 		words.innerHTML = ''; // clear actual words on the page
