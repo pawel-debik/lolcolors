@@ -27,19 +27,22 @@ body, h1, h2, h3, h4, p, ul[class], ol[class], li, figure, figcaption, blockquot
 #progress.start { stroke-dashoffset: 0; } 
 
 /* Bar */ 
-.bar { display: flex; flex-direction: column; justify-content: center; padding: 2.4em; background-color: var(--bg-color); margin-bottom: 60px; }
-.word__label { font-weight: bold;  font-size: 1.2rem; background-color: #fff; padding: 0.8em 1.6em; }
+.bar { display: flex; flex-direction: column; justify-content: center; padding: 2.4em; background-color: var(--bg-color); margin-bottom: 3em; }
+.word__label { display: inline-block; font-weight: bold; font-size: 1.2rem; background-color: #fff; padding: 0.8em 1.6em; margin: 0.2em; }
 .word__label--red { font-weight: bold;  font-size: 1.2rem; background-color: #fff; padding: 0.8em 1.6em; color: red; }
 .word__label--blue { font-weight: bold;  font-size: 1.2rem; background-color: #fff; padding: 0.8em 1.6em; color: blue; }
 .word__label--green { font-weight: bold;  font-size: 1.2rem; background-color: #fff; padding: 0.8em 1.6em; color: green; }
 .questions { display: flex; text-align: center; flex-direction: column; }
-.answers { text-align: center; }
-.instructions { margin-bottom: 30px; }
+.answers { display: flex; justify-content: center; }
+.instructions { margin-bottom: 1.8em; }
+.checkmark { width: 1.8em; }
 
 /* Controls */
 .controls { display: flex; justify-content: center; }
 .primary-button { font-size: 1.2rem; background-color: var(--action-color); padding: 0.8em 1.6em; color: #fff; border: none; border-radius: 5px; }
-.primary-button:hover { cursor: pointer; } 
+.primary-button:hover { cursor: pointer; }
+.game-running { background-color: #ccc; }
+.game-running:hover { cursor: auto; }
 
 /* User feedback */
 .soundwave-container { display: block; width: 100px; margin: 0 auto; }

@@ -13,7 +13,7 @@
 // Game settings
 const timeLimit = 5
 const colors = ['red', 'green', 'blue']; // web colors only
-const startNumber = 1 // start with three words
+const numberOfWordsAtStart = 1 // start with three words
 
 // Game elements
 const start = document.getElementById('start-button');
@@ -54,10 +54,17 @@ start.addEventListener('click', startGame);
 function startGame(){
 	let userInput = '';
 
-	if ( gameStatus != 'game running' ){
+	console.log(gameStatus);
+	if ( gameStatus == 'game over' ){
+		// reset things in case there is content from previous round
+		challenge = ''; // reset internal variable with words
+		words.innerHTML = ''; // clear actual words on the page
+		console.log('apparently its game over now');
+	}
 
+	if ( gameStatus != 'game running' ){
 		answers.innerHTML = ''; // clear input from previous round
-		displayWords(startNumber);
+		displayWords(numberOfWordsAtStart);
 		timer();
 		instructions.firstChild.data = 'Name the colors';
 		animateSoundwaves('play');
@@ -75,24 +82,23 @@ function updateGame(g, gameTime){
 
 	gameStatus = g;
 	start.disabled = false;
+	start.classList.remove('game-running');
 
 	if ( gameStatus == 'game running' ) {
 		console.log('game running');
 
+		start.firstChild.data = 'game running';
 		if ( progressBar.classList.contains('reset') ) {
 			progressBar.classList.toggle('reset');
 		}
 
 		start.disabled = true;
+		start.classList.add('game-running');
 	}
 
 	if ( gameStatus == 'game over' ) {
 		recognition.stop();
 		console.log('game over');
-		
-		// reset things in case there is content from previous round
-		challenge = ''; // reset internal variable with words
-		words.innerHTML = ''; // clear actual words on the page
 
 		progressBar.classList.add('reset');
 		progressBar.classList.remove('start');
@@ -100,7 +106,6 @@ function updateGame(g, gameTime){
 
 		start.firstChild.data = 'Play again';
 		instructions.firstChild.data = 'Game over';
-		gameStatus = 'not started'; // reset game status
 	}
 
 	if ( gameStatus == 'next round' ) {
@@ -126,19 +131,25 @@ function timerAnimation(){
 
 function answer(userInput){
 	if ( gameStatus == 'game running' ){
-		const showUserInput = document.createElement('span');
-		const checkboxImg = document.createElement('img');
+		const userInputArr = userInput.split(' ');
+		const checkmarkImg = document.createElement('img');
 
-		checkboxImg.setAttribute('src', 'Assets/Images/checkbox.svg');
-		showUserInput.innerHTML = userInput;
-		showUserInput.classList.add('word__label');
-		answers.appendChild(showUserInput);		
+		checkmarkImg.setAttribute('src', 'Assets/Images/checkmark.svg');
+		checkmarkImg.classList.add('checkmark');
+		
+		userInputArr.forEach(function(userInputWord,i){
+			const showUserInput = document.createElement('span');
+			showUserInput.innerHTML = userInputWord;
+			showUserInput.classList.add('word__label');
+			answers.appendChild(showUserInput);	
+		});
+			
 		animateSoundwaves('stop');
 
 		if (challenge.trim().toLowerCase() == userInput.trim().toLowerCase()){
 			updateGame('next round', timeLimit);
 			clearInterval(timeInterval);
-			answers.appendChild(checkboxImg);		
+			answers.appendChild(checkmarkImg);		
 			console.log(`Question: ${challenge}, Answer: ${userInput} Result: Corrent`);
 		} else {				
 			console.log(`Question: ${challenge}, Answer: ${userInput} Result: Wrong`);
