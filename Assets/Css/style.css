@@ -37,3 +37,7 @@ body, h1, h2, h3, h4, p, ul[class], ol[class], li, figure, figcaption, blockquot
 .controls { display: flex; justify-content: center; }
 .primary-button { font-size: 1.2rem; background-color: var(--action-color); padding: 0.8em 1.6em; color: #fff; border: none; border-radius: 5px; }
 .primary-button:hover { cursor: pointer; } 
+
+/* User feedback */
+.soundwave-container { display: block; width: 100px; margin: 0 auto; }
+.soundwave-line{fill:none;stroke:#D6F0FF;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}

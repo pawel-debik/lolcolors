@@ -1,6 +1,6 @@
 /** TODO
 
-- fix timer animation
+- add user input feedback
 - button disabled should run just once
 
 
@@ -27,6 +27,7 @@ const countDown = document.getElementById('count-down');
 let challenge = ''; // This var holds the randomly generated color words
 let gameStatus = 'not started';
 let timeInterval;
+let soundwaveInterval;
 
 // Voice synth items
 const talk = document.getElementById('talk');
@@ -54,6 +55,7 @@ function startGame(){
 	if ( gameStatus != 'game running' ){
 		displayWords(startNumber);
 		timer();
+		animateSoundwaves('play');
 		timerAnimation();
 		recognition.start();
 		progressBar.classList.add('start');
@@ -85,6 +87,7 @@ function updateGame(g, gameTime){
 
 		progressBar.classList.add('reset');
 		progressBar.classList.remove('start');
+		animateSoundwaves('stop');
 
 		start.firstChild.data = 'Play again';
 		instructions.firstChild.data = 'Game over';
@@ -179,6 +182,36 @@ function displayWords( input ){
 		words.appendChild(label);
 		i++;
 	}
+}
+
+// if you nested loop through a list it's slow, you probably should use map , hashmap
+
+
+
+// User Feedback
+function animateSoundwaves(status){
+	const shortLine = document.getElementById('line-5');
+	const shortLines = document.querySelectorAll('.soundwave-line');
+	const soundwaveContainer = document.querySelector('#soundwave-container');
+
+	if ( status == 'play' ) {
+		soundwaveInterval = setInterval(function(){
+			shortLines.forEach(function(shortLine, i){
+				const lineLength =  Math.round(Math.random()*3);
+				shortLine.y1.baseVal.value = 8 - lineLength;
+				shortLine.y2.baseVal.value = 8 + lineLength;
+			});
+		}, 100);
+	}
+
+	if ( status == 'stop' ) {
+		clearInterval(soundwaveInterval);
+		shortLines.forEach(function(shortLine, i){
+			shortLine.y1.baseVal.value = 0;
+			shortLine.y2.baseVal.value = 0;
+		});
+	}
+
 }
 
 
