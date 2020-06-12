@@ -18,29 +18,30 @@
 			</svg>
 		</div>
 	</div>
-	
-
-	<div id="soundwave-container" class="soundwave-container">
-		<svg version="1.1" id="soundwave" x="0px" y="0px" viewBox="0 0 28.5 17" >
-			<g> <line class="soundwave-line" id="line-1" x1="27.5" y1="0" x2="27.5" y2="0"/> </g>
-			<g> <line class="soundwave-line" id="line-2" x1="20.88" y1="0" x2="20.88" y2="0"/> </g>
-			<g> <line class="soundwave-line" id="line-3" x1="14.25" y1="0" x2="14.25" y2="0"/> </g>
-			<g> <line class="soundwave-line" id="line-4" x1="7.63" y1="0" x2="7.63" y2="0"/> </g>
-			<g> <line class="soundwave-line" id="line-5" x1="1" y1="0" x2="1" y2="0"/> </g>
-		</svg>
-	</div>
-
-
 	<div class="bar">
-		<p id="instructions" class="instructions">Press start and name the colors: </p>
-		<div class="words" id="words"></div>
+		<div class="questions">
+			<p id="instructions" class="instructions">Press start and name the colors</p>
+			<div class="words" id="words"></div>
+		</div>
+		<div id="soundwave-container" class="soundwave-container">
+			<svg version="1.1" id="soundwave" x="0px" y="0px" viewBox="0 0 28.5 17" >
+				<g> <line class="soundwave-line" id="line-1" x1="27.5" y1="0" x2="27.5" y2="0"/> </g>
+				<g> <line class="soundwave-line" id="line-2" x1="20.88" y1="0" x2="20.88" y2="0"/> </g>
+				<g> <line class="soundwave-line" id="line-3" x1="14.25" y1="0" x2="14.25" y2="0"/> </g>
+				<g> <line class="soundwave-line" id="line-4" x1="7.63" y1="0" x2="7.63" y2="0"/> </g>
+				<g> <line class="soundwave-line" id="line-5" x1="1" y1="0" x2="1" y2="0"/> </g>
+			</svg>
+		</div>
+		<div id="answers" class="answers">
+
+		</div>
 	</div>
 	<div class="controls">
 		<button class="primary-button" id="start-button">Start</button>
 	</div>
 	<p>To do:</p>
 	<ul>
-		<li>Display user input</li>
+		<li>If question is Blue and Green, and user says bluegreen, then my script should watch for that</li>
 		<li>Make a Dutch version and add a language selection</li>
 		<li>Stop timer if right answer is registered</li>
 		<li>Fix what labels say on button in between correct / wrong answers</li>

@@ -22,6 +22,8 @@ const progressBar = document.getElementById('progress');
 const circle = document.getElementById('animated');
 const instructions = document.getElementById('instructions');
 const countDown = document.getElementById('count-down');
+const soundwaveContainer = document.querySelector('#soundwave-container');
+const answers = document.querySelector('.answers');
 
 // Game variables
 let challenge = ''; // This var holds the randomly generated color words
@@ -53,8 +55,11 @@ function startGame(){
 	let userInput = '';
 
 	if ( gameStatus != 'game running' ){
+
+		answers.innerHTML = ''; // clear input from previous round
 		displayWords(startNumber);
 		timer();
+		instructions.firstChild.data = 'Name the colors';
 		animateSoundwaves('play');
 		timerAnimation();
 		recognition.start();
@@ -84,6 +89,10 @@ function updateGame(g, gameTime){
 	if ( gameStatus == 'game over' ) {
 		recognition.stop();
 		console.log('game over');
+		
+		// reset things in case there is content from previous round
+		challenge = ''; // reset internal variable with words
+		words.innerHTML = ''; // clear actual words on the page
 
 		progressBar.classList.add('reset');
 		progressBar.classList.remove('start');
@@ -92,8 +101,6 @@ function updateGame(g, gameTime){
 		start.firstChild.data = 'Play again';
 		instructions.firstChild.data = 'Game over';
 		gameStatus = 'not started'; // reset game status
-		challenge = ''; // reset internal variable with words
-		words.innerHTML = ''; // clear actual words on the page
 	}
 
 	if ( gameStatus == 'next round' ) {
@@ -119,9 +126,19 @@ function timerAnimation(){
 
 function answer(userInput){
 	if ( gameStatus == 'game running' ){
+		const showUserInput = document.createElement('span');
+		const checkboxImg = document.createElement('img');
+
+		checkboxImg.setAttribute('src', 'Assets/Images/checkbox.svg');
+		showUserInput.innerHTML = userInput;
+		showUserInput.classList.add('word__label');
+		answers.appendChild(showUserInput);		
+		animateSoundwaves('stop');
+
 		if (challenge.trim().toLowerCase() == userInput.trim().toLowerCase()){
 			updateGame('next round', timeLimit);
 			clearInterval(timeInterval);
+			answers.appendChild(checkboxImg);		
 			console.log(`Question: ${challenge}, Answer: ${userInput} Result: Corrent`);
 		} else {				
 			console.log(`Question: ${challenge}, Answer: ${userInput} Result: Wrong`);
@@ -192,7 +209,6 @@ function displayWords( input ){
 function animateSoundwaves(status){
 	const shortLine = document.getElementById('line-5');
 	const shortLines = document.querySelectorAll('.soundwave-line');
-	const soundwaveContainer = document.querySelector('#soundwave-container');
 
 	if ( status == 'play' ) {
 		soundwaveInterval = setInterval(function(){
@@ -200,6 +216,7 @@ function animateSoundwaves(status){
 				const lineLength =  Math.round(Math.random()*3);
 				shortLine.y1.baseVal.value = 8 - lineLength;
 				shortLine.y2.baseVal.value = 8 + lineLength;
+				shortLine.classList.add('active');
 			});
 		}, 100);
 	}
@@ -209,6 +226,7 @@ function animateSoundwaves(status){
 		shortLines.forEach(function(shortLine, i){
 			shortLine.y1.baseVal.value = 0;
 			shortLine.y2.baseVal.value = 0;
+			shortLine.classList.remove('active');
 		});
 	}
 
